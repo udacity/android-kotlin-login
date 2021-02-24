@@ -86,7 +86,9 @@ handleAuthResponse(it)
         observeAuthenticationState()
 
         binding.authButton.setOnClickListener {
-            launchSignInFlow()
+            //launchSignInFlow()
+
+            authResultLauncher.launch(SIGN_IN_RESULT_CODE)
         }
     }
 
