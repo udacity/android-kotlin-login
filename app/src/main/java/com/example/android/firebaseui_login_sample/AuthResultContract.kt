@@ -18,7 +18,6 @@ class AuthResultContract : ActivityResultContract<Int, IdpResponse>() {
         listOf(AuthUI.IdpConfig.GoogleBuilder().build(), AuthUI.IdpConfig.EmailBuilder().build())
 
 
-
     override fun createIntent(context: Context, input: Int?): Intent {
         return AuthUI.getInstance().createSignInIntentBuilder()
             .setLogo(R.drawable.ic_launcher_background)
@@ -29,19 +28,14 @@ class AuthResultContract : ActivityResultContract<Int, IdpResponse>() {
     }
 
 
-
     override fun parseResult(resultCode: Int, intent: Intent?): IdpResponse? {
 
-        return when (resultCode ){
-
+        return when (resultCode) {
             Activity.RESULT_OK -> IdpResponse.fromResultIntent(intent)
             else -> null
         }
 
     }
-
-
-
 
 
 }
