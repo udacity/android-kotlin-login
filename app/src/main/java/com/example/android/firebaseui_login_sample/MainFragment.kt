@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.registerForActivityResult
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -38,6 +39,19 @@ class MainFragment : Fragment() {
     companion object {
         const val TAG = "MainFragment"
         const val SIGN_IN_RESULT_CODE = 1001
+    }
+    //register for Activity Result
+    private val authResultLauncher = registerForActivityResult(AuthResultContract()){
+idpResponse ->
+        when{
+
+                //check if IdpResponse is null or if the error is not equal to null
+            (idpResponse== null || idpResponse.error != null) -> {
+
+
+            }
+
+        }
     }
 
     // Get a reference to the ViewModel scoped to this Fragment
