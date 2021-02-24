@@ -61,7 +61,7 @@ class MainFragment : Fragment() {
         observeAuthenticationState()
 
         binding.authButton.setOnClickListener {
-            // TODO call launchSignInFlow when authButton is clicked
+        launchSignInFlow()
         }
     }
 
