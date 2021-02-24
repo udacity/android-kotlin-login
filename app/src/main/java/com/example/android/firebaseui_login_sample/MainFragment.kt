@@ -33,6 +33,7 @@ import com.example.android.firebaseui_login_sample.databinding.FragmentMainBindi
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
+import timber.log.Timber
 
 class MainFragment : Fragment() {
 
@@ -40,15 +41,25 @@ class MainFragment : Fragment() {
         const val TAG = "MainFragment"
         const val SIGN_IN_RESULT_CODE = 1001
     }
+
     //register for Activity Result
-    private val authResultLauncher = registerForActivityResult(AuthResultContract()){
-idpResponse ->
-        when{
+    private val authResultLauncher =
+        registerForActivityResult(AuthResultContract()) {
 
-                //check if IdpResponse is null or if the error is not equal to null
-            (idpResponse== null || idpResponse.error != null) -> {
+handleAuthResponse(it)
 
+        }
 
+    private fun handleAuthResponse(idpResponse: IdpResponse?) {
+        when {
+            (idpResponse ==null || idpResponse.error != null) -> {
+
+                /* Handle error from returned data. */
+                Timber.i("Login unsuccessful")
+            }
+            else ->{
+                /* Handle sign-in success from returned data. */
+                Timber.i("Login successful")
             }
 
         }
