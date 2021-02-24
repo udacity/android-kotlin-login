@@ -66,8 +66,10 @@ dependencies {
 
     //Timber
     implementation 'com.jakewharton.timber:timber:4.7.1'
-
+    //Activity Result API Dependency for Activity
     implementation 'androidx.activity:activity-ktx:1.3.0-alpha02'
+
+    //Activity Result API Dependency for Activity
     implementation 'androidx.fragment:fragment-ktx:1.3.0'
     testImplementation 'junit:junit:4.13.2'
 }
