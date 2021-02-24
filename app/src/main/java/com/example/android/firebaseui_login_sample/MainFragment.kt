@@ -61,7 +61,7 @@ class MainFragment : Fragment() {
         observeAuthenticationState()
 
         binding.authButton.setOnClickListener {
-        launchSignInFlow()
+            launchSignInFlow()
         }
     }
 
@@ -70,6 +70,8 @@ class MainFragment : Fragment() {
         // TODO Listen to the result of the sign in process by filter for when
         //  SIGN_IN_REQUEST_CODE is passed back. Start by having log statements to know
         //  whether the user has signed in successfully
+
+
     }
 
     /**
@@ -106,5 +108,12 @@ class MainFragment : Fragment() {
     private fun launchSignInFlow() {
         // TODO Complete this function by allowing users to register and sign in with
         //  either their email address or Google account.
+
+
+        //add providers
+        val providers = mutableListOf(
+            AuthUI.IdpConfig.EmailBuilder().build(),
+            AuthUI.IdpConfig.GoogleBuilder().build()
+        )
     }
 }
