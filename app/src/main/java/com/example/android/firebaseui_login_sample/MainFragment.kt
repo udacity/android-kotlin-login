@@ -42,22 +42,24 @@ class MainFragment : Fragment() {
         const val SIGN_IN_RESULT_CODE = 1001
     }
 
+
+
     //register for Activity Result
     private val authResultLauncher =
         registerForActivityResult(AuthResultContract()) {
 
-handleAuthResponse(it)
-
+            handleAuthResponse(it)
         }
+
 
     private fun handleAuthResponse(idpResponse: IdpResponse?) {
         when {
-            (idpResponse ==null || idpResponse.error != null) -> {
+            (idpResponse == null || idpResponse.error != null) -> {
 
                 /* Handle error from returned data. */
                 Timber.i("Login unsuccessful")
             }
-            else ->{
+            else -> {
                 /* Handle sign-in success from returned data. */
                 Timber.i("Login successful")
             }
@@ -106,8 +108,31 @@ handleAuthResponse(it)
      * If there is a logged in user: (1) show a logout button and (2) display their name.
      * If there is no logged in user: show a login button
      */
+
+
     private fun observeAuthenticationState() {
-        val factToDisplay = viewModel.getFactToDisplay(requireContext())
+    val factToDisplay = viewModel.getFactToDisplay(requireContext())
+        viewModel.authenticationState.observe(viewLifecycleOwner){
+
+            when(it){
+
+                LoginViewModel.AuthenticationState.AUTHENTICATED -> {
+
+                    binding.authButton.text = getString(R.string.logout_button_text)
+                    binding.authButton.setOnClickListener {
+AuthUI.getInstance().signOut(requireContext())
+
+                    }
+                    binding.welcomeText.text = getFactWithPersonalization(factToDisplay)
+                }
+                else -> {
+
+                    binding.authButton.text = getString(R.string.logout_button_text)
+                    binding.authButton.setOnClickListener {authResultLauncher.launch(SIGN_IN_RESULT_CODE)}
+                    binding.welcomeText.text = factToDisplay
+                }
+            }
+        }
 
         // TODO Use the authenticationState variable from LoginViewModel to update the UI
         //  accordingly.
