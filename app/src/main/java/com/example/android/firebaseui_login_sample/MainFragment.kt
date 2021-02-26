@@ -43,7 +43,6 @@ class MainFragment : Fragment() {
     }
 
 
-
     //register for Activity Result
     private val authResultLauncher =
         registerForActivityResult(AuthResultContract()) {
@@ -111,24 +110,29 @@ class MainFragment : Fragment() {
 
 
     private fun observeAuthenticationState() {
-    val factToDisplay = viewModel.getFactToDisplay(requireContext())
-        viewModel.authenticationState.observe(viewLifecycleOwner){
+        val factToDisplay = viewModel.getFactToDisplay(requireContext())
+        viewModel.authenticationState.observe(viewLifecycleOwner) {
 
-            when(it){
+            when (it) {
 
                 LoginViewModel.AuthenticationState.AUTHENTICATED -> {
 
                     binding.authButton.text = getString(R.string.logout_button_text)
                     binding.authButton.setOnClickListener {
-AuthUI.getInstance().signOut(requireContext())
+                        //AuthUI.getInstance().signOut(requireContext())
+                        FirebaseAuth.getInstance().signOut()
 
                     }
                     binding.welcomeText.text = getFactWithPersonalization(factToDisplay)
                 }
                 else -> {
 
-                    binding.authButton.text = getString(R.string.logout_button_text)
-                    binding.authButton.setOnClickListener {authResultLauncher.launch(SIGN_IN_RESULT_CODE)}
+                    binding.authButton.text = getString(R.string.login_button_text)
+                    binding.authButton.setOnClickListener {
+                        authResultLauncher.launch(
+                            SIGN_IN_RESULT_CODE
+                        )
+                    }
                     binding.welcomeText.text = factToDisplay
                 }
             }

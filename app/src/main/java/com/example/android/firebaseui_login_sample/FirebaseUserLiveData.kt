@@ -38,6 +38,8 @@ class FirebaseUserLiveData : LiveData<FirebaseUser?>() {
 
     /*Utilize the FirebaseAuth.AuthStateListener onAuthStateChange
     callback to get updates on the current Firebase user*/
+
+    /*This tells us if there is a user currently logged in or not*/
     private val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
 
         //updates the user on this LiveData

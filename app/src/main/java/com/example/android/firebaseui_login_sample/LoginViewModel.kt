@@ -17,6 +17,7 @@
 package com.example.android.firebaseui_login_sample
 
 import android.content.Context
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.preference.PreferenceManager
@@ -49,6 +50,16 @@ class LoginViewModel : ViewModel() {
 
    /*Use FirebaseUserLiveData (which store a user) to populate AuthenticationState
     using the value of the LiveData*/
+
+   /* val authenticationState = Transformations.map(FirebaseUserLiveData()){
+        if (it!=null){
+
+            AuthenticationState.AUTHENTICATED
+        }else{
+
+            AuthenticationState.UNAUTHENTICATED
+        }
+    }*/
     val authenticationState = FirebaseUserLiveData().map {
 
         //if user is not null
