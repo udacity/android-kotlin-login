@@ -33,11 +33,26 @@ class SettingsFragment : PreferenceFragmentCompat() {
     // Get a reference to the ViewModel scoped to this Fragment
     private val viewModel by viewModels<LoginViewModel>()
 
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+    override fun onCreatePreferences(savedInstanceState: Bundle?,  rootKey: String?) {
         setPreferencesFromResource(R.xml.settings, rootKey)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.authenticationState.observe(viewLifecycleOwner){
+
+            when(it){
+
+                LoginViewModel.AuthenticationState.AUTHENTICATED -> {
+
+                }
+                LoginViewModel.AuthenticationState.UNAUTHENTICATED -> {
+
+                    findNavController().navigate(R.id.loginFragment)
+                }
+                else -> {}
+            }
+        }
     }
 }
