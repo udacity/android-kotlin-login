@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.registerForActivityResult
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -32,6 +33,7 @@ import com.example.android.firebaseui_login_sample.databinding.FragmentMainBindi
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
+import timber.log.Timber
 
 class MainFragment : Fragment() {
 
@@ -40,13 +42,37 @@ class MainFragment : Fragment() {
         const val SIGN_IN_RESULT_CODE = 1001
     }
 
+
+    //register for Activity Result
+    private val authResultLauncher =
+        registerForActivityResult(AuthResultContract()) {
+
+            handleAuthResponse(it)
+        }
+
+
+    private fun handleAuthResponse(idpResponse: IdpResponse?) {
+        when {
+            (idpResponse == null || idpResponse.error != null) -> {
+
+                /* Handle error from returned data. */
+                Timber.i("Login unsuccessful")
+            }
+            else -> {
+                /* Handle sign-in success from returned data. */
+                Timber.i("Login successful")
+            }
+
+        }
+    }
+
     // Get a reference to the ViewModel scoped to this Fragment
     private val viewModel by viewModels<LoginViewModel>()
     private lateinit var binding: FragmentMainBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false)
 
         // TODO Remove the two lines below once observeAuthenticationState is implemented.
@@ -59,37 +85,54 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeAuthenticationState()
+        binding.settingsBtn.setOnClickListener{
+findNavController().navigate(MainFragmentDirections.actionMainFragmentToSettingsFragment())
 
-        binding.authButton.setOnClickListener {
-            // TODO call launchSignInFlow when authButton is clicked
+           // findNavController().navigate(MainFragmentDirections.)
         }
+
+
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        // TODO Listen to the result of the sign in process by filter for when
-        //  SIGN_IN_REQUEST_CODE is passed back. Start by having log statements to know
-        //  whether the user has signed in successfully
-    }
+
 
     /**
      * Observes the authentication state and changes the UI accordingly.
      * If there is a logged in user: (1) show a logout button and (2) display their name.
      * If there is no logged in user: show a login button
      */
+
+
     private fun observeAuthenticationState() {
         val factToDisplay = viewModel.getFactToDisplay(requireContext())
+        viewModel.authenticationState.observe(viewLifecycleOwner) {
 
-        // TODO Use the authenticationState variable from LoginViewModel to update the UI
-        //  accordingly.
-        //
-        //  TODO If there is a logged-in user, authButton should display Logout. If the
-        //   user is logged in, you can customize the welcome message by utilizing
-        //   getFactWithPersonalition(). I
+            when (it) {
 
-        // TODO If there is no logged in user, authButton should display Login and launch the sign
-        //  in screen when clicked. There should also be no personalization of the message
-        //  displayed.
+                LoginViewModel.AuthenticationState.AUTHENTICATED -> {
+
+                    binding.authButton.text = getString(R.string.logout_button_text)
+                    binding.authButton.setOnClickListener {
+                        //AuthUI.getInstance().signOut(requireContext())
+                        FirebaseAuth.getInstance().signOut()
+
+                    }
+                    binding.welcomeText.text = getFactWithPersonalization(factToDisplay)
+                }
+                else -> {
+
+                    binding.authButton.text = getString(R.string.login_button_text)
+                    binding.authButton.setOnClickListener {
+                        authResultLauncher.launch(
+                            SIGN_IN_RESULT_CODE
+                        )
+                    }
+                    binding.welcomeText.text = factToDisplay
+                }
+            }
+        }
+
+
     }
 
 
@@ -103,8 +146,5 @@ class MainFragment : Fragment() {
         )
     }
 
-    private fun launchSignInFlow() {
-        // TODO Complete this function by allowing users to register and sign in with
-        //  either their email address or Google account.
-    }
+
 }

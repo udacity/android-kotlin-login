@@ -35,6 +35,7 @@ import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import timber.log.Timber
 
 class LoginFragment : Fragment() {
 
@@ -50,7 +51,7 @@ class LoginFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         // Inflate the layout for this fragment.
         val binding = DataBindingUtil.inflate<FragmentLoginBinding>(
@@ -65,7 +66,24 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        navController = findNavController()
+
+
+        viewModel.authenticationState.observe(viewLifecycleOwner) {
+
+            when (it) {
+
+                LoginViewModel.AuthenticationState.AUTHENTICATED -> {
+
+                    findNavController().popBackStack()
+                }
+                else -> {
+                    Timber.i("Authentication state doesn't require UI Change")
+                }
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().navigate(R.id.mainFragment)
+        }
     }
 
     private fun launchSignInFlow() {

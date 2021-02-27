@@ -29,17 +29,24 @@ import androidx.lifecycle.LiveData
  * nature of your LiveData object, but is okay for this purpose since we are only adding and
  * removing the authStateListener.
  */
-class FirebaseUserLiveData : LiveData<FirebaseUser?>() {
-    private val firebaseAuth = FirebaseAuth.getInstance()
+private val firebaseAuth = FirebaseAuth.getInstance()
 
-    // TODO set the value of this FireUserLiveData object by hooking it up to equal the value of the
-    //  current FirebaseUser. You can utilize the FirebaseAuth.AuthStateListener callback to get
-    //  updates on the current Firebase user logged into the app.
+
+class FirebaseUserLiveData : LiveData<FirebaseUser?>() {
+
+
+
+    /*Utilize the FirebaseAuth.AuthStateListener onAuthStateChange
+    callback to get updates on the current Firebase user*/
+
+    /*This tells us if there is a user currently logged in or not*/
     private val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
-        // TODO Use the FirebaseAuth instance instantiated at the beginning of the class to get an
-        //  entry point into the Firebase Authentication SDK the app is using.
-        //  With an instance of the FirebaseAuth class, you can now query for the current user.
+
+        //updates the user on this LiveData
+        value = firebaseAuth.currentUser
+
     }
+
 
     // When this object has an active observer, start observing the FirebaseAuth state to see if
     // there is currently a logged in user.
